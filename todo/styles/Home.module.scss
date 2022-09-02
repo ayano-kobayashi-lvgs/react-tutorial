@@ -1,0 +1,76 @@
+@charset "utf-8";
+
+@use "foundation/variables" as *;
+
+.title {
+  font-weight: bold;
+}
+
+.btn-base {
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-weight: bold;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.3ms;
+  }
+}
+
+.show {
+  @extend .btn-base;
+  background-color: $color-main-dark;
+  color: $color-gray-main;
+}
+
+.hide {
+  @extend .btn-base;
+  background-color: $color-gray-main;
+  color: $color-main-dark;
+}
+
+.primary {
+  @extend .btn-base;
+  background-color: $color-main;
+  color: $color-gray-main;
+}
+
+.secondary {
+  @extend .btn-base;
+  background-color: $color-gray-main;
+  color: $color-main-dark;
+}
+
+.tertiary {
+  @extend .btn-base;
+  background-color: $color-gray-main;
+  color: $color-gray-a1;
+}
+
+.input {
+  background-color: $color-form;
+  position: relative;
+  display: inline-block;
+  padding: 4px;
+  border: 1px solid $color-form-border;
+  border-radius: 3px;
+  font-size: 15px;
+  color: black;
+  outline: none;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+.link {
+  text-decoration: none;
+  font-weight: bold;
+  color: $color-main-brightness;
+
+  :hover {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.3ms;
+  }
+}
