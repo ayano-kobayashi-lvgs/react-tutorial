@@ -1,7 +1,7 @@
 import React from "react";
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import styles from '../../styles/Home.module.css'
+import styles from '../../styles/Home.module.scss'
 
 const Index: NextPage = () => {
     return (
@@ -13,7 +13,13 @@ const Index: NextPage = () => {
             </Head>
             <header>
                 <p>詳細です。</p>
-                <p><a href="../">戻る</a></p>
+                <p>
+                    <a
+                        href="../"
+                        className={styles.link}>
+                        戻る
+                    </a>
+                </p>
             </header>
         </div >
     );

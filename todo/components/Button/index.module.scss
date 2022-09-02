@@ -1,0 +1,60 @@
+@charset "utf-8";
+
+//@use "@foundation/variables" as *;
+
+$height: 56px;
+$width: 240px;
+
+%button {
+    width: $width;
+    height: $height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease-in;
+
+    &:hover {
+        cursor: pointer;
+        filter:
+            brightness(120%) drop-shadow(0 0 10px rgba(61, 90, 255, 0.2));
+    }
+
+    &:focus {
+        filter: none;
+    }
+
+    &:active {
+        filter: none;
+
+        &::after {
+            width: $width;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: $width;
+            height: $width;
+            margin-top: -$width / 2;
+            margin-left: -$width / 2;
+            content: "";
+            border-radius: 100%;
+            opacity: 0;
+            animation: ripple 0.5s ease-out;
+        }
+    }
+
+    &:disabled {
+        pointer-events: none;
+    }
+
+    &.oval {
+        border-radius: $height / 2;
+    }
+
+    &.round {
+        border-radius: 4px;
+    }
+}
