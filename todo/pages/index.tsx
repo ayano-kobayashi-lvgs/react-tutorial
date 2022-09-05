@@ -1,72 +1,207 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import React, { useState } from "react";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { Button } from "../components/Button";
+import { Input } from "../components/Input";
+import styles from "../styles/Home.module.scss"
 
 const Index: NextPage = () => {
+    // 型定義======
+    type Todo = {
+        id: number;
+        title: string;
+        editMode: boolean;
+        enabled: boolean;
+    }
 
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Nextjs</title>
-        <meta name="description" content="Nextjs" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+    // サンプル=======
+    const sampleTodoList = [
+        { id: 0, title: 'React参考書読む', editMode: false, enabled: true },
+        { id: 1, title: 'Laravel環境構築', editMode: false, enabled: true },
+        { id: 2, title: 'インフラ勉強', editMode: false, enabled: true },
+    ];
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
+    // 状態管理=======
+    const [todoList, setTodoList] = useState<Todo[]>(sampleTodoList);
+    const [inputText, setInputText] = useState('');
+    const [editText, setEditText] = useState('');
+    const [flashMessages, setFlashMessages] = useState({ todoTitle: '', message: '' });
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+    // 表示モード切り替え=======
+    const enableEditState = (id: number) => {
+        setTodoList(todoList.map((todo) => todo.id === id ? { id: todo.id, title: todo.title, editMode: true, enabled: todo.enabled } : todo));
+    }
+    const disableEditState = (id: number) => {
+        setTodoList(todoList.map((todo) => todo.id === id ? { id: todo.id, title: todo.title, editMode: false, enabled: todo.enabled } : todo));
+    }
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+    // 追加・取消の表示切り替え========
+    const [buttonState, setButtonState] = useState('plus');
+    const enableMinusButton = () => {
+        setButtonState('minus');
+    }
+    const enablePlusButton = () => {
+        setButtonState('plus');
+    }
 
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+    // 登録処理=======
+    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputText(e.target.value);
+    }
+    // IDの自動連番
+    let nextId = todoList.length;
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+    const addTodo = () => {
+        const newTodo: Todo = {
+            id: nextId,
+            title: inputText,
+            editMode: false,
+            enabled: true,
+        }
+        setTodoList([...todoList, newTodo]);
+        setFlashMessages({ todoTitle: newTodo.title, message: 'が登録されました！' });
+        setInputText('');
+        nextId++;
+        console.log(todoList);
+    };
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
-  )
-}
+    const handleChangeEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEditText(e.target.value);
+    }
+
+    // 更新処理=======
+    const updateTodo = (id: number) => {
+        setTodoList((prevTodo) => prevTodo.map((todo) => todo.id === id ? { id: todo.id, title: editText, editMode: false, enabled: todo.enabled } : todo));
+        setFlashMessages({ todoTitle: editText, message: 'が更新されました！' });
+        setEditText('');
+    }
+
+    // 削除処理=======
+    const disableTodo = (id: number, title: string) => {
+        const todoTitle = title;
+        setTodoList(todoList.map((todo) => todo.id === id ? { id: todo.id, title: todo.title, editMode: todo.editMode, enabled: false } : todo));
+        setFlashMessages({ todoTitle: todoTitle, message: 'が削除されました！' });
+    };
+
+    return (
+        <div>
+            <Head>
+                <title>TODO</title>
+                <meta name="description" content="これはTODO作成アプリです。" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <header>
+                <p className={styles.title}>TODOリスト</p>
+            </header>
+            <main>
+                {buttonState === 'plus' ?
+                    <div>
+                        <Button
+                            onClick={enableMinusButton}
+                            className={styles.show}>追加
+                        </Button>
+                    </div>
+                    :
+                    <div>
+                        <Button
+                            onClick={enablePlusButton}
+                            className={styles.hide}>
+                            取消
+                        </Button>
+                    </div>
+                }
+                {(flashMessages) && <p>{flashMessages.todoTitle}{flashMessages.message}</p>}
+                {(buttonState === 'minus') &&
+                    <div>
+                        <form>
+                            <Input
+                                type="text"
+                                value={inputText}
+                                onChange={handleChangeInput}
+                                className={styles.input}
+                                required />
+                            <Button
+                                disabled={inputText === ""}
+                                onClick={() => addTodo()}
+                                className={styles.primary}>
+                                登録
+                            </Button>
+                        </form>
+                    </div>
+                }
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>タイトル</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {todoList.map((todo) => todo.enabled &&
+                                <tr key={todo.id}>
+                                    {(todo.editMode) ?
+                                        <>
+                                            <td colSpan={3}>
+                                                <form
+                                                    action="">
+                                                    <Input
+                                                        type="text"
+                                                        value={editText}
+                                                        onChange={handleChangeEdit}
+                                                        className={styles.input}
+                                                        required />
+                                                    <Button
+                                                        disabled={editText === ""}
+                                                        onClick={() => updateTodo(todo.id)}
+                                                        className={styles.primary}>
+                                                        更新
+                                                    </Button>
+                                                </form>
+                                                <Button
+                                                    onClick={() => disableEditState(todo.id)}
+                                                    className={styles.tertiary}>
+                                                    取り消し
+                                                </Button>
+                                            </td>
+                                        </>
+                                        :
+                                        <>
+                                            <td>{todo.title}</td>
+                                            <td>
+                                                <Button
+                                                    onClick={() => enableEditState(todo.id)}
+                                                    className={styles.primary}>
+                                                    編集
+                                                </Button>
+                                            </td>
+                                            <td>
+                                                <Button
+                                                    onClick={() => disableTodo(todo.id, todo.title)}
+                                                    className={styles.secondary}>
+                                                    削除
+                                                </Button>
+                                            </td>
+                                        </>
+                                    }
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </main >
+            <footer>
+                <div>
+                    詳しくは
+                    <a
+                        href="/todo/details"
+                        className={styles.link}>こちら</a>
+                    をクリックしてください。
+                </div>
+            </footer>
+        </div >
+    );
+};
 
 export default Index;
