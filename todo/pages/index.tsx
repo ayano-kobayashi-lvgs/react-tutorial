@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Button } from "../components/Button";
+import { Input } from "../components/Input";
 import styles from "../styles/Home.module.scss"
 
 const Index: NextPage = () => {
@@ -113,7 +114,7 @@ const Index: NextPage = () => {
                 {(buttonState === 'minus') &&
                     <div>
                         <form>
-                            <input
+                            <Input
                                 type="text"
                                 value={inputText}
                                 onChange={handleChangeInput}
@@ -145,7 +146,7 @@ const Index: NextPage = () => {
                                             <td colSpan={3}>
                                                 <form
                                                     action="">
-                                                    <input
+                                                    <Input
                                                         type="text"
                                                         value={editText}
                                                         onChange={handleChangeEdit}
